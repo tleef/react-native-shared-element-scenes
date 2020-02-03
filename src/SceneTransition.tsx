@@ -1,8 +1,15 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { SharedElementTransition } from "react-native-shared-element";
+import {
+  SharedElementTransition,
+  RNAnimatedSharedElementTransitionView
+} from "react-native-shared-element";
 import { SceneType } from "./Scene";
 import Animated from "react-native-reanimated";
+
+const RNRenimatedSharedElementTransitionView = Animated.createAnimatedComponent(
+  RNAnimatedSharedElementTransitionView
+);
 
 type Props = {
   from: SceneType;
@@ -55,6 +62,7 @@ export default class SceneTransition extends React.Component<Props> {
               animation={toActor.config.animation}
               resize={toActor.config.resize}
               align={toActor.config.align}
+              SharedElementComponent={RNRenimatedSharedElementTransitionView}
             />
           );
         })}
