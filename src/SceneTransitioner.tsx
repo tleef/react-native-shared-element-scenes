@@ -16,9 +16,8 @@ const {
   block,
   eq,
   not,
-  and,
   clockRunning,
-  call
+  call,
 } = Animated;
 
 type TransitionArgs = {
@@ -139,61 +138,67 @@ class SceneTransitioner extends React.Component<InjectedStageProps, State> {
         defaultSpringConfig.restSpeedThreshold
     });
 
-    this._inOut = new Value(0);
+    this._inOut = new Value(1);
     this._prevInOut = new Value(0);
 
-    const handleEnterEnd = cond(
-      eq(this._prevInOut, 1),
-      cond(
-        not(eq(this._inOut, 1)),
-        call([true], this._onEnterEnd),
-        cond(
-          not(clockRunning(this._driver.clock)),
-          call([false], this._onEnterEnd)
-        )
-      )
-    );
+    // ENTER
 
-    const handleLeaveEnd = cond(
+    const handleLeaveCancelled = cond(
       eq(this._prevInOut, -1),
-      cond(
-        not(eq(this._inOut, -1)),
-        call([true], this._onLeaveEnd),
-        cond(
-          not(clockRunning(this._driver.clock)),
-          call([false], this._onLeaveEnd)
-        )
-      )
+      call([], () => this._onLeaveEnd(true))
     );
 
     const handleEnterStart = cond(
-      and(eq(this._inOut, 1), not(eq(this._prevInOut, 1))),
+      not(eq(this._prevInOut, 1)),
       call([], this._onEnterStart)
     );
 
+    const handleEnterEnd = cond(
+      not(clockRunning(this._driver.clock)),
+      call([], () => this._onEnterEnd(false))
+    );
+
+    const handleEnter = block([
+      handleLeaveCancelled,
+      handleEnterStart,
+      this._driver.run(),
+      handleEnterEnd,
+      set(this._prevInOut, 1),
+    ]);
+
+    // LEAVE
+
+    const handleEnterCancelled = cond(
+      eq(this._prevInOut, 1),
+      call([], () => this._onEnterEnd(true))
+    );
+
     const handleLeaveStart = cond(
-      and(eq(this._inOut, -1), not(eq(this._prevInOut, -1))),
+      not(eq(this._prevInOut, -1)),
       call([], this._onLeaveStart)
     );
 
-    const handleEnter = cond(eq(this._inOut, 1), [
-      set(this._prevInOut, 1),
-      this._driver.run()
-    ]);
+    const handleLeaveEnd = cond(
+      not(clockRunning(this._driver.clock)),
+      call([], () => this._onLeaveEnd(false))
+    );
 
-    const handleLeave = cond(eq(this._inOut, -1), [
-      set(this._prevInOut, -1),
-      this._driver.rev()
-    ]);
-
-    this._drive = block([
-      handleEnterEnd,
-      handleLeaveEnd,
-      handleEnterStart,
+    const handleLeave = block([
+      handleEnterCancelled,
       handleLeaveStart,
-      handleEnter,
-      handleLeave
+      this._driver.rev(),
+      handleLeaveEnd,
+      set(this._prevInOut, -1),
     ]);
+
+    this._drive = cond(
+      eq(this._inOut, 1),
+      handleEnter,
+      cond(
+        eq(this._inOut, -1),
+        handleLeave
+      )
+    );
 
     this._enterStartListeners = [];
     this._enterEndListeners = [];
@@ -214,22 +219,22 @@ class SceneTransitioner extends React.Component<InjectedStageProps, State> {
     this._enterStartListeners.forEach(fn => fn());
   };
 
-  private _onEnterEnd = ([cancelled]: readonly boolean[]) => {
+  private _onEnterEnd = (cancelled: boolean) => {
+    this._enterEndListeners.forEach(fn => fn(cancelled));
     if (!cancelled) {
       this.reset();
     }
-    this._enterEndListeners.forEach(fn => fn(cancelled));
   };
 
   private _onLeaveStart = () => {
     this._leaveStartListeners.forEach(fn => fn());
   };
 
-  private _onLeaveEnd = ([cancelled]: readonly boolean[]) => {
+  private _onLeaveEnd = (cancelled: boolean) => {
+    this._leaveEndListeners.forEach(fn => fn(cancelled));
     if (!cancelled) {
       this.reset();
     }
-    this._leaveEndListeners.forEach(fn => fn(cancelled));
   };
 
   private _handleAddScene = (sceneId: string, scene: SceneType) => {
