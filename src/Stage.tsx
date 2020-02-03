@@ -2,7 +2,7 @@ import React from "react";
 import { ViewProps } from "react-native";
 import { EventEmitter } from "events";
 import StageContext from "./StageContext";
-import {SceneType} from "./Scene";
+import { SceneType } from "./Scene";
 
 type Handler = (id: string, scene: SceneType) => void;
 

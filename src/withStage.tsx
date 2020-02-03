@@ -8,7 +8,9 @@ export type InjectedStageProps = {
   stage: Stage;
 };
 
-export default function withStage<T extends React.ComponentType<any>>(Component: T) {
+export default function withStage<T extends React.ComponentType<any>>(
+  Component: T
+) {
   const displayName = `withStage(${Component.displayName || Component.name})`;
   const C = (props: any) => {
     const { wrappedComponentRef, ...remainingProps } = props;

@@ -1,19 +1,13 @@
 import React from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { SharedElementTransition } from "react-native-shared-element";
-import {SceneType} from "./Scene";
-
-export type SpringConfig = {
-  stiffness?: number;
-  damping?: number;
-  mass?: number;
-};
+import { SceneType } from "./Scene";
+import Animated from "react-native-reanimated";
 
 type Props = {
   from: SceneType;
   to: SceneType;
-  springConfig: SpringConfig;
-  onFinish: () => void;
+  position: Animated.Value<number>;
 };
 
 export default class SceneTransition extends React.Component<Props> {
@@ -22,7 +16,7 @@ export default class SceneTransition extends React.Component<Props> {
   };
 
   render() {
-    const { to, from, springConfig, onFinish } = this.props;
+    const { to, from, position } = this.props;
 
     if (!to || !from) {
       return null;
@@ -39,15 +33,6 @@ export default class SceneTransition extends React.Component<Props> {
     if (!sharedIds.length) {
       return null;
     }
-
-    const position = new Animated.Value(0);
-
-    Animated.spring(position, {
-      toValue: 1,
-      stiffness: springConfig.stiffness,
-      damping: springConfig.damping,
-      mass: springConfig.mass
-    }).start(onFinish);
 
     return (
       <View style={StyleSheet.absoluteFill} pointerEvents="none">

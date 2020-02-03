@@ -2,13 +2,15 @@ import React from "react";
 import hoistStatics from "hoist-non-react-statics";
 import invariant from "tiny-invariant";
 import SceneContext from "./SceneContext";
-import {SceneType} from "./Scene";
+import { SceneType } from "./Scene";
 
 export type InjectedSceneProps = {
   scene: SceneType;
 };
 
-export default function withScene<T extends React.ComponentType<any>>(Component: T) {
+export default function withScene<T extends React.ComponentType<any>>(
+  Component: T
+) {
   const displayName = `withScene(${Component.displayName || Component.name})`;
   const C = (props: any) => {
     const { wrappedComponentRef, ...remainingProps } = props;
