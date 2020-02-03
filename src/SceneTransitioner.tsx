@@ -17,7 +17,7 @@ const {
   eq,
   not,
   clockRunning,
-  call,
+  call
 } = Animated;
 
 type TransitionArgs = {
@@ -163,7 +163,7 @@ class SceneTransitioner extends React.Component<InjectedStageProps, State> {
       handleEnterStart,
       this._driver.run(),
       handleEnterEnd,
-      set(this._prevInOut, 1),
+      set(this._prevInOut, 1)
     ]);
 
     // LEAVE
@@ -188,16 +188,13 @@ class SceneTransitioner extends React.Component<InjectedStageProps, State> {
       handleLeaveStart,
       this._driver.rev(),
       handleLeaveEnd,
-      set(this._prevInOut, -1),
+      set(this._prevInOut, -1)
     ]);
 
     this._drive = cond(
       eq(this._inOut, 1),
       handleEnter,
-      cond(
-        eq(this._inOut, -1),
-        handleLeave
-      )
+      cond(eq(this._inOut, -1), handleLeave)
     );
 
     this._enterStartListeners = [];
