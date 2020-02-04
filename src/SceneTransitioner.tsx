@@ -1,12 +1,11 @@
 import React from "react";
 import Animated from "react-native-reanimated";
-import {
-  SpringConfig,
-  SpringDriver
-} from "@tleef/react-native-reanimated-utils/lib";
-import { SceneType } from "./Scene";
+import { SpringDriver } from "@tleef/react-native-reanimated-utils/lib";
+import { SceneClass } from "./Scene";
 import withStage, { InjectedStageProps } from "./withStage";
 import SceneTransition from "./SceneTransition";
+import TransitionReceipt from "./TransitionReceipt";
+import { EndListeners, SpringConfig, StartListeners } from "./types";
 
 const {
   Value,
@@ -23,20 +22,20 @@ const {
 type TransitionArgs = {
   from: string;
   to: string;
-  springConfig?: Partial<SpringConfig>;
+  springConfig?: SpringConfig;
 };
 
 type State = {
   from?: string;
-  fromScene?: SceneType;
+  fromScene?: SceneClass;
   to?: string;
-  toScene?: SceneType;
+  toScene?: SceneClass;
 };
 
-type StartHandler = () => void;
-type EndHandler = (cancelled: boolean) => void;
-
-class SceneTransitioner extends React.Component<InjectedStageProps, State> {
+export class SceneTransitionerClass extends React.Component<
+  InjectedStageProps,
+  State
+> {
   // @ts-ignore
   private _driver: SpringDriver;
   // @ts-ignore
@@ -46,13 +45,13 @@ class SceneTransitioner extends React.Component<InjectedStageProps, State> {
   // @ts-ignore
   private _drive: Animated.Node<number>;
   // @ts-ignore
-  private _enterStartListeners: Array<StartHandler>;
+  private _enterStartListeners: StartListeners;
   // @ts-ignore
-  private _enterEndListeners: Array<EndHandler>;
+  private _enterEndListeners: EndListeners;
   // @ts-ignore
-  private _leaveStartListeners: Array<StartHandler>;
+  private _leaveStartListeners: StartListeners;
   // @ts-ignore
-  private _leaveEndListeners: Array<EndHandler>;
+  private _leaveEndListeners: EndListeners;
 
   constructor(props: InjectedStageProps) {
     super(props);
@@ -234,7 +233,7 @@ class SceneTransitioner extends React.Component<InjectedStageProps, State> {
     }
   };
 
-  private _handleAddScene = (sceneId: string, scene: SceneType) => {
+  private _handleAddScene = (sceneId: string, scene: SceneClass) => {
     const { from, to } = this.state;
 
     if (from === sceneId) {
@@ -251,46 +250,4 @@ class SceneTransitioner extends React.Component<InjectedStageProps, State> {
   };
 }
 
-class TransitionReceipt {
-  private readonly _inOut: Animated.Value<-1 | 0 | 1>;
-  private readonly _enterStartListeners: Array<StartHandler>;
-  private readonly _enterEndListeners: Array<EndHandler>;
-  private readonly _leaveStartListeners: Array<StartHandler>;
-  private readonly _leaveEndListeners: Array<EndHandler>;
-
-  constructor(
-    inOut: Animated.Value<-1 | 0 | 1>,
-    enterStartListeners: Array<StartHandler>,
-    enterEndListeners: Array<EndHandler>,
-    leaveStartListeners: Array<StartHandler>,
-    leaveEndListeners: Array<EndHandler>
-  ) {
-    this._inOut = inOut;
-    this._enterStartListeners = enterStartListeners;
-    this._enterEndListeners = enterEndListeners;
-    this._leaveStartListeners = leaveStartListeners;
-    this._leaveEndListeners = leaveEndListeners;
-  }
-
-  cancel = () => {
-    this._inOut.setValue(-1);
-  };
-
-  onEnterStart = (handler: StartHandler) => {
-    this._enterStartListeners.push(handler);
-  };
-
-  onEnterEnd = (handler: EndHandler) => {
-    this._enterEndListeners.push(handler);
-  };
-
-  onLeaveStart = (handler: StartHandler) => {
-    this._leaveStartListeners.push(handler);
-  };
-
-  onLeaveEnd = (handler: EndHandler) => {
-    this._leaveEndListeners.push(handler);
-  };
-}
-
-export default withStage(SceneTransitioner);
+export default withStage(SceneTransitionerClass);

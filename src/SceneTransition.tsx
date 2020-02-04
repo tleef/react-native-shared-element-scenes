@@ -4,7 +4,7 @@ import {
   SharedElementTransition,
   RNAnimatedSharedElementTransitionView
 } from "react-native-shared-element";
-import { SceneType } from "./Scene";
+import { SceneClass } from "./Scene";
 import Animated from "react-native-reanimated";
 
 const RNRenimatedSharedElementTransitionView = Animated.createAnimatedComponent(
@@ -12,8 +12,8 @@ const RNRenimatedSharedElementTransitionView = Animated.createAnimatedComponent(
 );
 
 type Props = {
-  from: SceneType;
-  to: SceneType;
+  from: SceneClass;
+  to: SceneClass;
   position: Animated.Value<number>;
 };
 

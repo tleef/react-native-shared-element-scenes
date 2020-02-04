@@ -2,10 +2,10 @@ import React from "react";
 import hoistStatics from "hoist-non-react-statics";
 import invariant from "tiny-invariant";
 import SceneContext from "./SceneContext";
-import { SceneType } from "./Scene";
+import { SceneClass } from "./Scene";
 
 export type InjectedSceneProps = {
-  scene: SceneType;
+  scene: SceneClass;
 };
 
 export default function withScene<T extends React.ComponentType<any>>(
@@ -17,7 +17,7 @@ export default function withScene<T extends React.ComponentType<any>>(
 
     return (
       <SceneContext.Consumer>
-        {(scene: SceneType | null) => {
+        {(scene: SceneClass | null) => {
           invariant(
             scene,
             `You should not use <${displayName} /> outside a <Scene>`

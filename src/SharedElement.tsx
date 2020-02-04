@@ -17,7 +17,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 } & InjectedSceneProps;
 
-class SharedElement extends React.Component<Props> {
+export class SharedElementClass extends React.Component<Props> {
   static defaultProps = {
     animation: "move"
   };
@@ -89,4 +89,4 @@ class SharedElement extends React.Component<Props> {
   }
 }
 
-export default withScene(SharedElement);
+export default withScene(SharedElementClass);

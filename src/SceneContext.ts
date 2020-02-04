@@ -1,6 +1,6 @@
 import React from "react";
-import { SceneType } from "./Scene";
+import { SceneClass } from "./Scene";
 
-const SceneContext = React.createContext<SceneType | null>(null);
+const SceneContext = React.createContext<SceneClass | null>(null);
 
 export default SceneContext;

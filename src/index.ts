@@ -5,6 +5,7 @@ import SceneTransitioner from "./SceneTransitioner";
 import SharedElement from "./SharedElement";
 import Stage from "./Stage";
 import StageContext from "./StageContext";
+import TransitionReceipt from "./TransitionReceipt";
 import withScene from "./withScene";
 import withStage from "./withStage";
 
@@ -16,6 +17,12 @@ export {
   SharedElement,
   Stage,
   StageContext,
+  TransitionReceipt,
   withScene,
   withStage
 };
+
+export * from "./types";
+export { SceneClass } from "./Scene";
+export { SceneTransitionerClass } from "./SceneTransitioner";
+export { SharedElementClass } from "./SharedElement";

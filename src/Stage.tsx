@@ -2,19 +2,19 @@ import React from "react";
 import { ViewProps } from "react-native";
 import { EventEmitter } from "events";
 import StageContext from "./StageContext";
-import { SceneType } from "./Scene";
+import { SceneClass } from "./Scene";
 
-type Handler = (id: string, scene: SceneType) => void;
+type Handler = (id: string, scene: SceneClass) => void;
 
 type Scenes = {
-  [key: string]: SceneType;
+  [key: string]: SceneClass;
 };
 
 export default class Stage extends React.Component<ViewProps> {
   private _scenes: Scenes = {};
   private _ee = new EventEmitter();
 
-  addScene(id: string, scene: SceneType): void {
+  addScene(id: string, scene: SceneClass): void {
     this._scenes[id] = scene;
     this._ee.emit(`add:${id}`, id, scene);
   }
@@ -24,7 +24,7 @@ export default class Stage extends React.Component<ViewProps> {
     this._ee.emit(`remove:${id}`, id);
   }
 
-  getScene(id: string): SceneType | undefined {
+  getScene(id: string): SceneClass | undefined {
     return this._scenes[id];
   }
 

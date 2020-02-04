@@ -31,7 +31,7 @@ type Props = {
 } & InjectedStageProps &
   ViewProps;
 
-export class SceneType extends React.Component<Props> {
+export class SceneClass extends React.Component<Props> {
   private _sceneId?: string;
   private _ancestorNode?: SharedElementNode = undefined;
   private _actors: Actors = {};
@@ -97,4 +97,4 @@ export class SceneType extends React.Component<Props> {
   }
 }
 
-export default withStage(SceneType);
+export default withStage(SceneClass);
