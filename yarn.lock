@@ -829,10 +829,10 @@
     wcwidth "^1.0.1"
     ws "^1.1.0"
 
-"@tleef/react-native-reanimated-utils@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@tleef/react-native-reanimated-utils/-/react-native-reanimated-utils-2.1.0.tgz#8d58f1ae3c3ff7f8b881d9d84f08314efff9873b"
-  integrity sha512-pJ4fVbeI7PaYCRpOzu1gilf3ZyMJcgIeyVNoVGG6A1xAiBfJiUacXcq3frBJkewVc3Ho7numLU/gAGEz0nrVBw==
+"@tleef/react-native-reanimated-utils@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@tleef/react-native-reanimated-utils/-/react-native-reanimated-utils-2.2.0.tgz#1bb1633d858d78c1d414cdeba1852c55b0df6652"
+  integrity sha512-V1fYC1H1rdlC/LMrhyBcqpKe+Mg4r6m4hYGCLDg1F2wHvk7yik2rM7I2bHgRRM8Zl+UVISiZuAcOkAdXJHIuGg==
 
 "@types/events@^3.0.0":
   version "3.0.0"

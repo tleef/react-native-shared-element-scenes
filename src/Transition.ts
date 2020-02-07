@@ -1,8 +1,11 @@
 import { EndHandler, SpringConfig, StartHandler } from "./types";
 import { SceneClass } from "./Scene";
-import TransitionAnimation from "./TransitionAnimation";
 import Animated from "react-native-reanimated";
 import Stage from "./Stage";
+import {
+  Animation,
+  SpringDriver
+} from "@tleef/react-native-reanimated-utils/lib";
 
 type ReadyHandler = (t: Transition) => void;
 type FinishedHandler = (t: Transition) => void;
@@ -11,7 +14,7 @@ export default class Transition {
   private readonly _key: string;
   private readonly _fromId: string;
   private readonly _toId: string;
-  private readonly _animation: TransitionAnimation;
+  private readonly _animation: Animation;
   private readonly _stage: Stage;
   private readonly _handleReady: ReadyHandler;
   private readonly _handleFinished: FinishedHandler;
@@ -26,10 +29,26 @@ export default class Transition {
     onReady: ReadyHandler,
     onFinish: FinishedHandler
   ) {
+    const defaultSpringConfig = Animated.SpringUtils.makeDefaultConfig();
+
+    const springDriver = new SpringDriver({
+      stiffness: springConfig.stiffness || defaultSpringConfig.stiffness,
+      mass: springConfig.mass || defaultSpringConfig.mass,
+      damping: springConfig.damping || defaultSpringConfig.damping,
+      overshootClamping:
+        springConfig.overshootClamping || defaultSpringConfig.overshootClamping,
+      restDisplacementThreshold:
+        springConfig.restDisplacementThreshold ||
+        defaultSpringConfig.restDisplacementThreshold,
+      restSpeedThreshold:
+        springConfig.restSpeedThreshold ||
+        defaultSpringConfig.restSpeedThreshold
+    });
+
     this._key = Transition.keyFor(fromId, toId);
     this._fromId = fromId;
     this._toId = toId;
-    this._animation = new TransitionAnimation(springConfig);
+    this._animation = new Animation(springDriver);
     this._stage = stage;
     this._handleReady = onReady;
     this._handleFinished = onFinish;
@@ -73,7 +92,7 @@ export default class Transition {
   }
 
   get animValue(): Animated.Value<number> {
-    return this._animation.animValue;
+    return this._animation.value;
   }
 
   get animate(): Animated.Node<number> {
@@ -81,11 +100,11 @@ export default class Transition {
   }
 
   continue = () => {
-    this._animation.forward();
+    this._animation.continue();
   };
 
   cancel = () => {
-    this._animation.backward();
+    this._animation.cancel();
   };
 
   onEnterStart = (handler: StartHandler) => {

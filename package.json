@@ -32,7 +32,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@tleef/react-native-reanimated-utils": "^2.1.0",
+    "@tleef/react-native-reanimated-utils": "^2.2.0",
     "events": "^3.1.0",
     "hoist-non-react-statics": "^3.3.2",
     "tiny-invariant": "^1.0.6"

@@ -6,7 +6,6 @@ import SharedElement from "./SharedElement";
 import Stage from "./Stage";
 import StageContext from "./StageContext";
 import Transition from "./Transition";
-import TransitionAnimation from "./TransitionAnimation";
 import withScene from "./withScene";
 import withStage from "./withStage";
 
@@ -19,7 +18,6 @@ export {
   Stage,
   StageContext,
   Transition,
-  TransitionAnimation,
   withScene,
   withStage
 };
