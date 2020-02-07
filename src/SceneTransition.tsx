@@ -4,33 +4,30 @@ import {
   SharedElementTransition,
   RNAnimatedSharedElementTransitionView
 } from "react-native-shared-element";
-import { SceneClass } from "./Scene";
 import Animated from "react-native-reanimated";
+import Transition from "./Transition";
 
 const RNRenimatedSharedElementTransitionView = Animated.createAnimatedComponent(
   RNAnimatedSharedElementTransitionView
 );
 
 type Props = {
-  from: SceneClass;
-  to: SceneClass;
-  position: Animated.Value<number>;
+  transition: Transition;
 };
 
 export default class SceneTransition extends React.Component<Props> {
-  static defaultProps = {
-    springConfig: {}
-  };
-
   render() {
-    const { to, from, position } = this.props;
+    const { transition } = this.props;
 
-    if (!to || !from) {
+    const toScene = transition.toScene;
+    const fromScene = transition.fromScene;
+
+    if (!toScene || !fromScene) {
       return null;
     }
 
-    const toActors = to.getActors();
-    const fromActors = from.getActors();
+    const toActors = toScene.getActors();
+    const fromActors = fromScene.getActors();
 
     const toIds = Object.keys(toActors);
     const fromIds = Object.keys(fromActors);
@@ -42,31 +39,34 @@ export default class SceneTransition extends React.Component<Props> {
     }
 
     return (
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        {sharedIds.map((sharedId, index) => {
-          const fromActor = fromActors[sharedId];
-          const toActor = toActors[sharedId];
+      <React.Fragment>
+        <Animated.Code>{() => transition.animate}</Animated.Code>
+        <View style={StyleSheet.absoluteFill} pointerEvents="none">
+          {sharedIds.map((sharedId, index) => {
+            const fromActor = fromActors[sharedId];
+            const toActor = toActors[sharedId];
 
-          return (
-            <SharedElementTransition
-              key={index}
-              start={{
-                ancestor: from.getAncestor() || null,
-                node: fromActor.node
-              }}
-              end={{
-                ancestor: to.getAncestor() || null,
-                node: toActor.node
-              }}
-              position={position}
-              animation={toActor.config.animation}
-              resize={toActor.config.resize}
-              align={toActor.config.align}
-              SharedElementComponent={RNRenimatedSharedElementTransitionView}
-            />
-          );
-        })}
-      </View>
+            return (
+              <SharedElementTransition
+                key={index}
+                start={{
+                  ancestor: fromScene.getAncestor() || null,
+                  node: fromActor.node
+                }}
+                end={{
+                  ancestor: toScene.getAncestor() || null,
+                  node: toActor.node
+                }}
+                position={transition.animValue}
+                animation={toActor.config.animation}
+                resize={toActor.config.resize}
+                align={toActor.config.align}
+                SharedElementComponent={RNRenimatedSharedElementTransitionView}
+              />
+            );
+          })}
+        </View>
+      </React.Fragment>
     );
   }
 }

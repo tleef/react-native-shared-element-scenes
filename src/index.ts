@@ -5,7 +5,8 @@ import SceneTransitioner from "./SceneTransitioner";
 import SharedElement from "./SharedElement";
 import Stage from "./Stage";
 import StageContext from "./StageContext";
-import TransitionReceipt from "./TransitionReceipt";
+import Transition from "./Transition";
+import TransitionAnimation from "./TransitionAnimation";
 import withScene from "./withScene";
 import withStage from "./withStage";
 
@@ -17,7 +18,8 @@ export {
   SharedElement,
   Stage,
   StageContext,
-  TransitionReceipt,
+  Transition,
+  TransitionAnimation,
   withScene,
   withStage
 };
