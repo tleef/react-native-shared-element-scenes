@@ -4,6 +4,8 @@ import SceneTransition from "./SceneTransition";
 import { SpringConfig } from "./types";
 import Transition from "./Transition";
 
+type Transitions = { [key: string]: Transition };
+
 type TransitionArgs = {
   fromId: string;
   toId: string;
@@ -12,32 +14,30 @@ type TransitionArgs = {
 
 type State = {
   count: number;
-  transitions: { [key: string]: Transition };
 };
 
 export class SceneTransitionerClass extends React.Component<
   InjectedStageProps,
   State
 > {
+  private readonly _transitions: Transitions = {};
+
   constructor(props: InjectedStageProps) {
     super(props);
 
     this.state = {
-      count: 0,
-      transitions: {}
+      count: 0
     };
   }
 
   render() {
-    const { transitions } = this.state;
-
     return (
       <React.Fragment>
-        {Object.keys(transitions).map(transKey => {
+        {Object.keys(this._transitions).map(transKey => {
           return (
             <SceneTransition
               key={transKey}
-              transition={transitions[transKey]}
+              transition={this._transitions[transKey]}
             />
           );
         })}
@@ -47,9 +47,8 @@ export class SceneTransitionerClass extends React.Component<
 
   public transition = ({ fromId, toId, springConfig = {} }: TransitionArgs) => {
     const { stage } = this.props;
-    const { transitions } = this.state;
 
-    let trans = transitions[Transition.keyFor(fromId, toId)];
+    let trans = this._transitions[Transition.keyFor(fromId, toId)];
 
     if (!trans) {
       trans = new Transition(
@@ -61,12 +60,7 @@ export class SceneTransitionerClass extends React.Component<
         this._handleTransitionFinished
       );
 
-      this.setState({
-        transitions: {
-          ...transitions,
-          [trans.key]: trans
-        }
-      });
+      this._transitions[trans.key] = trans;
     }
 
     trans.continue();
@@ -81,14 +75,10 @@ export class SceneTransitionerClass extends React.Component<
   };
 
   private _handleTransitionFinished = (trans: Transition) => {
-    const { transitions } = this.state;
-
-    delete transitions[trans.key];
+    delete this._transitions[trans.key];
 
     this.setState({
-      transitions: {
-        ...transitions
-      }
+      count: this.state.count + 1
     });
   };
 }
